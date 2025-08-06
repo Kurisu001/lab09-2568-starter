@@ -1,7 +1,7 @@
 import TaskCard from "../components/TaskCard";
 import TodoModal from "../components/Modal";
 import { type TaskCardProps } from "../libs/Todolist";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 function App() {
   const [tasks, setTasks] = useState<TaskCardProps[]>([
@@ -24,32 +24,41 @@ function App() {
       isDone: false,
     },
   ]);
-
+  const [doneCount, setDoneCount] = useState(0);
+  const [allCount,setAllCount] = useState(tasks.length);
+  
   const handleAdd = (newTask: TaskCardProps) => {
     //make a new array based on old "tasks" and add newTask as last one
     const newTasks = [...tasks, newTask];
     setTasks(newTasks);
   };
-
+  
   // Define the function with proper type
   const deleteTask = (taskId: string) => {
     const newTasks = tasks.filter((task: TaskCardProps) => task.id !== taskId);
     setTasks(newTasks);
+    //update done count
+    
   };
-
+  
   // Define the function with proper type
   const toggleDoneTask = (taskId: string) => {
     const newTasks = tasks.map((todo: TaskCardProps) =>
       todo.id === taskId ? { ...todo, isDone: !todo.isDone } : todo
-    );
+  );
     setTasks(newTasks);
   };
+  useEffect(()=> {
+    setAllCount(tasks.length)
+    const scan = tasks.filter((Tasks)=>Tasks.isDone == true)
+    setDoneCount(scan.length);
+  })
 
   return (
     <div className="col-12 m-2 p-0">
       <div className="container text-center">
         <h2>Todo List</h2>
-        <span className="m-2">All : () Done : ()</span>
+        <span className="m-2">All : ({allCount}) Done : ({doneCount})</span>
         {/* Modal Component */}
         <button
           type="button"
